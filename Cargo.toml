@@ -1,0 +1,13 @@
+[package]
+name = "yatzy-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5"
+regex = "1.10.6"
+text_io = "0.1.12"
+
+[[bin]]
+name = "yatzy"
+path = "src/yatzy.rs"
