@@ -1,5 +1,5 @@
 
-pub const FIELD_CNT: u8 = 12;
+pub const FIELD_CNT: u8 = 13;
 
 pub struct Data {
     ones: i8,
@@ -14,6 +14,7 @@ pub struct Data {
     largestraight: i8,
     fullhouse: i8,
     yatzy: i8,
+    chance: i8,
 }
 
 impl Data {
@@ -31,6 +32,7 @@ impl Data {
             largestraight: -1,
             fullhouse: -1,
             yatzy: -1,
+            chance: -1,
         }
     }
 
@@ -45,6 +47,10 @@ impl Data {
         n
     }
 
+    pub fn get_numbers_sum(&self) -> i8 {
+        self.get_ones() + self.get_twos() + self.get_threes() + self.get_fours() + self.get_fives() + self.get_sixes()
+    }
+
     pub fn add_ones(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
 
         if self.ones >= 0 {
@@ -56,7 +62,7 @@ impl Data {
     }
 
     pub fn get_ones(&self) -> i8 {
-        self.ones
+        if self.ones >= 0 {self.ones} else {0}
     }
 
     pub fn add_twos(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -70,7 +76,7 @@ impl Data {
     }
 
     pub fn get_twos(&self) -> i8 {
-        self.twos
+        if self.twos >= 0 {self.twos} else {0}
     }
 
     pub fn add_threes(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -84,7 +90,7 @@ impl Data {
     }
 
     pub fn get_threes(&self) -> i8 {
-        self.threes
+        if self.threes >= 0 {self.threes} else {0}
     }
 
     pub fn add_fours(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -98,7 +104,7 @@ impl Data {
     }
 
     pub fn get_fours(&self) -> i8 {
-        self.fours
+        if self.fours >= 0 {self.fours} else {0}
     }
 
     pub fn add_fives(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -112,7 +118,7 @@ impl Data {
     }
 
     pub fn get_fives(&self) -> i8 {
-        self.fives
+        if self.fives >= 0 {self.fives} else {0}
     }
 
     pub fn add_sixes(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -126,7 +132,7 @@ impl Data {
     }
 
     pub fn get_sixes(&self) -> i8 {
-        self.sixes
+        if self.sixes >= 0 {self.sixes} else {0}
     }    
 
     pub fn add_threeofakind(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -150,7 +156,7 @@ impl Data {
     }
 
     pub fn get_threeofakind(&self) -> i8 {
-        self.threeofakind
+        if self.threeofakind >= 0 {self.threeofakind} else {0}
     }    
 
     pub fn add_fourofakind(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -174,7 +180,7 @@ impl Data {
     }
 
     pub fn get_fourofakind(&self) -> i8 {
-        self.fourofakind
+        if self.fourofakind >= 0 {self.fourofakind} else {0}
     }    
 
     pub fn add_smallstraight(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -201,7 +207,7 @@ impl Data {
     }
 
     pub fn get_smallstraight(&self) -> i8 {
-        self.smallstraight
+        if self.smallstraight >= 0 {self.smallstraight} else {0}
     }    
 
     pub fn add_largestraight(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -227,7 +233,7 @@ impl Data {
     }
 
     pub fn get_largestraight(&self) -> i8 {
-        self.largestraight
+        if self.largestraight >= 0 {self.largestraight} else {0}
     }
 
     pub fn add_fullhouse(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -264,7 +270,7 @@ impl Data {
     }
 
     pub fn get_fullhouse(&self) -> i8 {
-        self.fullhouse
+        if self.fullhouse >= 0 {self.fullhouse} else {0}
     }
 
     pub fn add_yatzy(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
@@ -283,15 +289,47 @@ impl Data {
     }
 
     pub fn get_yatzy(&self) -> i8 {
-        self.yatzy
+        if self.yatzy >= 0 {self.yatzy} else {0}
     }
 
-    // pub fn print_data(&self) {
-    //     println("ones: {}", if self.ones >= 0 {self.ones} else {'#'});
-    //     println("twos: {}", if self.ones >= 0 {self.ones} else {'#'});
-    //     println("threes: {}", if self.ones >= 0 {self.ones} else {'#'});
-    //     println("fours: {}", if self.ones >= 0 {self.ones} else {'#'});
-    //     println("fives: {}", if self.ones >= 0 {self.ones} else {'#'});
-    //     println("sixes: {}", if self.ones >= 0 {self.ones} else {'#'});
-    // }
+    pub fn add_chance(&mut self, dice: &Vec<u8>) -> Result<(), &str> {
+
+        if self.chance >= 0 {
+            return Err("Chance field is already set.")
+        }
+
+        self.chance = dice.iter().sum::<u8>() as i8;
+
+        Ok(())
+    }
+
+    pub fn get_chance(&self) -> i8 {
+        if self.chance >= 0 {self.chance} else {0}
+    }
+
+    pub fn fetch_score(&self) -> i8 {
+        let mut nums = self.get_numbers_sum();
+        if nums >= 63 {
+            nums += 50;
+        }
+        nums + self.get_threeofakind() + self.get_fourofakind() + self.get_smallstraight()
+             + self.get_largestraight() + self.get_fullhouse() + self.get_yatzy()
+    }
+
+    pub fn print_data(&self) {
+        println!("ones: {}", if self.ones >= 0 {self.ones} else {-44});
+        println!("twos: {}", if self.twos >= 0 {self.twos} else {-44});
+        println!("threes: {}", if self.threes >= 0 {self.threes} else {-44});
+        println!("fours: {}", if self.fours >= 0 {self.fours} else {-44});
+        println!("fives: {}", if self.fives >= 0 {self.fives} else {-44});
+        println!("sixes: {}", if self.sixes >= 0 {self.sixes} else {-44});
+        println!("bonus: {}", if self.get_numbers_sum() >= 63 {50} else {-66});
+        println!("threeofakind: {}", if self.threeofakind >= 0 {self.threeofakind} else {-44});
+        println!("fourofakind: {}", if self.fourofakind >= 0 {self.fourofakind} else {-44});
+        println!("smallstraight: {}", if self.smallstraight >= 0 {self.smallstraight} else {-44});
+        println!("largestraight: {}", if self.largestraight >= 0 {self.largestraight} else {-44});
+        println!("fullhouse: {}", if self.fullhouse >= 0 {self.fullhouse} else {-44});
+        println!("yatzy: {}", if self.yatzy >= 0 {self.yatzy} else {-44});
+        println!("chance: {}\n", if self.chance >= 0 {self.chance} else {-44});
+    }
 }

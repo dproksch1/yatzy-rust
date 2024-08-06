@@ -108,6 +108,16 @@ fn main() {
                                 Err(e) => println!("Error: {}", e)
                             }
                         },
+                    "assign chance\n" => {
+                            match pdata.add_chance(&dice) {
+                                Ok(()) => completed = true,
+                                Err(e) => println!("Error: {}", e)
+                            }
+                        },
+                    "score\n" => println!("Current Score: {}", pdata.fetch_score()),
+                    "bonus\n" => println!("Current NumScore: {}/63", pdata.get_numbers_sum()),
+                    "board\n" => pdata.print_data(),
+                    "dice\n" => println!("{:?}\n", dice),
                     "exit\n" => exit(1),
                     "fin\n" => break 'control_loop,
                     _ => print!("Unknown Command: {}", input)
@@ -117,7 +127,8 @@ fn main() {
         }
         
     }
-    // println!("Score: {}", pdata.iter().sum());
+    println!("Score: {}\n", pdata.fetch_score());
+    pdata.print_data();
 
 }
 
