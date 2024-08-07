@@ -125,7 +125,6 @@ fn main() {
             }
             input = String::new();
         }
-        
     }
     println!("Score: {}\n", pdata.fetch_score());
     pdata.print_data();
